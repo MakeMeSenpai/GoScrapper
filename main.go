@@ -1,8 +1,9 @@
 package main
 
 import (
-    "fmt"
-    "github.com/gocolly/colly"
+	"fmt"
+
+	"github.com/gocolly/colly"
 )
 
 // main() contains code adapted from example found in Colly's docs:
@@ -11,17 +12,15 @@ func main() {
     // Instantiate default collector
     c := colly.NewCollector()
 
-    c.OnHTML("a[href]", func(e *colly.HTMLElement) {
-        // Find link using an attribute selector
-        // Matches any element that includes href=""
-        link := e.Attr("href")
-
-        // Print link
-        fmt.Printf("Link found: %q -> %s\n", e.Text, link)
-
-        // Visit link
-        e.Request.Visit(link)
-    })
+	c.OnHTML("a.result-image", func(e *colly.HTMLElement) {
+		// collects all shopping item links
+		link := e.Attr("href")
+		// uses the text as a conditional/filter
+		if (e.Text == "\n                $0\n        ") {
+			// if the item is $0 then give us the link!
+			fmt.Printf("$0 -> %q \n", link)
+		}
+	})
 
     c.OnRequest(func(r *colly.Request) {
         fmt.Println("Visiting", r.URL)
@@ -40,5 +39,5 @@ func main() {
     })
 
     // Start scraping on https://hackerspaces.org
-    c.Visit("https://hackerspaces.org/")
+    c.Visit("https://bakersfield.craigslist.org/d/for-sale/search/sss")
 }
